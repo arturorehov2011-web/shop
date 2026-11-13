@@ -1,0 +1,12 @@
+[
+  {"id": "p1", "cat": "liquid", "name": "Жижка 1", "price": 12, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "preorder"}, "eta": "ждём поставку, около 3 дней"},
+  {"id": "p2", "cat": "liquid", "name": "Жижка 2", "price": 12, "image": "", "status": "in_stock", "eta": "ждём поставку, около 3 дней", "areas": {"ilinka": "in_stock", "nekrasovka": "preorder", "yuzhny": "preorder", "krechka": "out"}},
+  {"id": "p3", "cat": "vape", "name": "Вейп 1", "price": 25, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
+  {"id": "p4", "cat": "vape", "name": "Вейп 2", "price": 30, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}},
+  {"id": "p5", "cat": "snus", "name": "Снюс 1", "price": 9, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}},
+  {"id": "p6", "cat": "snus", "name": "Снюс 2", "price": 10, "image": "", "status": "preorder", "eta": "ждём поставку, около недели", "areas": {"ilinka": "out", "nekrasovka": "preorder", "yuzhny": "out", "krechka": "preorder"}},
+  {"id": "p7", "cat": "disp", "name": "Одноразка 1", "price": 14, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
+  {"id": "p8", "cat": "disp", "name": "Одноразка 2", "price": 15, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}},
+  {"id": "p9", "cat": "energy", "name": "Энергетик 1", "price": 3, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
+  {"id": "p10", "cat": "energy", "name": "Энергетик 2", "price": 3, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}
+]

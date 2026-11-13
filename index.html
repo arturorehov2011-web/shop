@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>dirtyshopp27</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg:#080414; --surface:#140c28; --surface2:#1e1236; --line:#3d2070;
+    --text:#f4efec; --muted:#a98d86;
+    --fire:#ff3b1f; --ember:#ff8a1f;
+    --ok:#3fcf6e; --warn:#ffb020; --off:#6d625f;
+    --display:"Rubik Wet Paint","Impact","Arial Black",sans-serif;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; min-height:100%; }
+  body {
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(70% 38% at 12% 0%, rgba(140,60,255,.42), transparent 70%),
+      radial-gradient(60% 34% at 100% 22%, rgba(255,60,200,.24), transparent 70%),
+      radial-gradient(80% 40% at 0% 62%, rgba(40,130,255,.22), transparent 70%),
+      radial-gradient(90% 50% at 100% 100%, rgba(150,70,255,.36), transparent 70%),
+      linear-gradient(180deg,#0f0820 0%,#080414 45%,#0d0620 100%);
+    background-attachment:fixed; padding:0 12px 120px; overflow-x:hidden;
+  }
+  #embers { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+
+  /* фоновая сцена: зомби и вейпы */
+  .scene { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .zw { position:absolute; left:0; bottom:var(--b); height:var(--h); width:var(--w); opacity:var(--o);
+        animation:patrol var(--t) linear infinite; animation-delay:var(--d); }
+  .zf { width:100%; height:100%; animation:turn var(--t) linear infinite; animation-delay:var(--d); }
+  .zf svg { width:100%; height:100%; overflow:visible; filter:drop-shadow(0 0 8px rgba(255,59,31,.45)); }
+  @keyframes patrol { 0%,100% { transform:translateX(0); } 50% { transform:translateX(calc(100vw - var(--w))); } }
+  @keyframes turn { 0%,49.99% { transform:scaleX(1); } 50%,99.99% { transform:scaleX(-1); } }
+  .zb { animation:bob .36s ease-in-out infinite alternate; }
+  .leg, .arm { transform-box:fill-box; }
+  .leg { transform-origin:50% 0; animation:swing .72s ease-in-out infinite alternate; }
+  .leg.b { animation-direction:alternate-reverse; }
+  .arm { transform-origin:0 50%; animation:reach .9s ease-in-out infinite alternate; }
+  @keyframes swing { from { transform:rotate(-26deg); } to { transform:rotate(26deg); } }
+  @keyframes reach { from { transform:rotate(-7deg); } to { transform:rotate(9deg); } }
+  @keyframes bob { from { transform:translateY(0); } to { transform:translateY(-2.5px); } }
+
+  .vp { position:absolute; width:40px; height:100px; opacity:.9; transform:rotate(var(--r));
+        animation:floaty var(--ft) ease-in-out infinite alternate; animation-delay:var(--fd); }
+  .vp svg { width:100%; height:100%; display:block; filter:drop-shadow(0 0 10px var(--c)); }
+  .led { animation:blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity:.25; } }
+  @keyframes floaty { from { transform:translateY(-12px) rotate(calc(var(--r) - 5deg)); } to { transform:translateY(14px) rotate(calc(var(--r) + 5deg)); } }
+  .puff { position:absolute; left:50%; top:-2px; width:26px; height:26px; border-radius:50%; opacity:0;
+          background:radial-gradient(circle, var(--c) 0%, rgba(255,255,255,.25) 40%, transparent 70%);
+          animation:rise 4.2s ease-out infinite; }
+  .puff:nth-child(2) { animation-delay:1.4s; --dx:-16px; }
+  .puff:nth-child(3) { animation-delay:2.8s; --dx:22px; }
+  @keyframes rise { 0% { transform:translate(-50%,0) scale(.4); opacity:0; }
+                    15% { opacity:.65; }
+                    100% { transform:translate(calc(-50% + var(--dx,8px)),-110px) scale(2.8); opacity:0; } }
+
+  /* банки снюса, которые открываются */
+  .sn { position:absolute; width:66px; height:66px; opacity:.9; transform:rotate(var(--r));
+        animation:floaty var(--ft) ease-in-out infinite alternate; animation-delay:var(--fd); }
+  .sn svg { width:100%; height:100%; overflow:visible; display:block; filter:drop-shadow(0 0 10px var(--c)); }
+  .lid { transform-box:view-box; transform-origin:30px 22px; animation:openlid 6s ease-in-out infinite; animation-delay:var(--od); }
+  .pouch.up { transform-box:fill-box; transform-origin:center; animation:popup 6s ease-in-out infinite; animation-delay:var(--od); }
+  .spark { transform-box:fill-box; transform-origin:center; opacity:0; animation:spark 6s ease-in-out infinite; animation-delay:var(--od); }
+  .spark.s2 { animation-delay:calc(var(--od) + .25s); }
+  .spark.s3 { animation-delay:calc(var(--od) + .5s); }
+  @keyframes openlid { 0%,12% { transform:translate(0,0) rotate(0); } 30%,62% { transform:translate(17px,-20px) rotate(34deg); } 80%,100% { transform:translate(0,0) rotate(0); } }
+  @keyframes popup { 0%,25% { transform:translateY(0) rotate(0); } 40%,58% { transform:translateY(-10px) rotate(-10deg); } 72%,100% { transform:translateY(0) rotate(0); } }
+  @keyframes spark { 0%,26% { opacity:0; transform:scale(.3); } 40%,56% { opacity:1; transform:scale(1); } 70%,100% { opacity:0; transform:scale(.3); } }
+
+  /* дым и пар */
+  .fog { position:absolute; width:70vw; height:45vh; left:var(--x); top:var(--y); border-radius:50%;
+         background:radial-gradient(closest-side, var(--fc), transparent);
+         animation:fogdrift var(--fdur) ease-in-out infinite alternate; animation-delay:var(--fdl); }
+  @keyframes fogdrift { from { transform:translate(-8vw,2vh) scale(.9); } to { transform:translate(10vw,-4vh) scale(1.2); } }
+  .wisp { position:absolute; bottom:-12vh; left:var(--x); width:var(--ww); height:46vh; border-radius:50%; opacity:0;
+          background:radial-gradient(closest-side, rgba(255,255,255,.34), rgba(205,165,255,.16) 55%, transparent);
+          animation:wisp var(--wd) ease-out infinite; animation-delay:var(--wdl); }
+  @keyframes wisp { 0% { transform:translate(0,0) scale(.5,.6); opacity:0; }
+                    20% { opacity:.55; }
+                    100% { transform:translate(var(--wx),-70vh) scale(1.8,1.4); opacity:0; } }
+
+  /* районы: где есть, где предзаказ, где нет в наличии */
+  .areas { margin-top:3px; padding-top:6px; border-top:1px dashed var(--line); display:flex; flex-direction:column; gap:3px; }
+  .ar { font-size:12px; line-height:1.35; }
+  .ar span { font-weight:700; }
+  .ar.on span { color:var(--ok); }
+  .ar.pre span { color:var(--warn); }
+  .ar.no { opacity:.75; }
+  .ar.no span { color:var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .scene { display:none; } }
+  .wrap { position:relative; z-index:1; max-width:520px; margin:0 auto; }
+
+  h1 { font-family:var(--display); font-weight:400; font-size:30px; margin:18px 4px 4px; letter-spacing:.5px;
+       text-shadow:0 0 22px rgba(150,70,255,.8); }
+  .sub { margin:0 4px 12px; font-size:13px; color:var(--muted); }
+
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; padding:6px 0 12px; }
+  .tab { flex:none; border:1px solid var(--line); background:var(--surface); color:var(--text); border-radius:20px;
+         padding:8px 14px; font-size:14px; font-weight:600; cursor:pointer; transition:background .2s, border-color .2s; }
+  .tab[aria-pressed="true"] { background:linear-gradient(135deg,var(--fire),#c4200a); border-color:var(--fire); color:#fff;
+         box-shadow:0 4px 16px rgba(255,59,31,.45); }
+  .empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:40px 0; }
+
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  /* .cell не масштабируется, поэтому область наведения стабильна и анимация не дёргается */
+  .cell { position:relative; }
+  .card { border-radius:16px; background:linear-gradient(160deg,var(--surface2),var(--surface)); border:1px solid var(--line);
+          display:flex; flex-direction:column; overflow:hidden; height:100%;
+          transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+  .cell.off .card { filter:grayscale(.9); opacity:.55; }
+  .pic { position:relative; overflow:hidden; aspect-ratio:1; }
+  .pic svg { width:100%; height:100%; display:block; transition:transform .35s ease; }
+  .pic::after { content:""; position:absolute; inset:0; transform:translateX(-120%);
+    background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.26) 50%,transparent 70%); pointer-events:none; }
+
+  @media (hover:hover) and (pointer:fine) {
+    .cell:not(.off):hover { z-index:5; }
+    .cell:not(.off):hover .card { transform:scale(1.07) translateY(-3px); border-color:var(--fire);
+      box-shadow:0 14px 34px rgba(255,59,31,.45), 0 0 26px rgba(255,138,31,.3); }
+    .cell:not(.off):hover .pic svg { transform:scale(1.12); }
+    .cell:not(.off):hover .pic::after { transform:translateX(120%); transition:transform .6s ease; }
+  }
+  @media (hover:none) { .cell:not(.off) .card:active { transform:scale(.97); } }
+
+  .info { padding:9px 10px 11px; display:flex; flex-direction:column; gap:5px; flex:1; }
+  .name { font-weight:700; font-size:14px; line-height:1.25; }
+  .price { font-size:17px; font-weight:800; color:#fff; text-shadow:0 0 12px rgba(255,138,31,.6); }
+  .badge { font-size:11.5px; font-weight:600; padding:2px 9px; border-radius:20px; width:fit-content; border:1px solid currentColor; }
+  .badge.in_stock { color:var(--ok); background:rgba(63,207,110,.12); }
+  .badge.preorder { color:var(--warn); background:rgba(255,176,32,.12); }
+  .badge.out { color:var(--off); background:rgba(255,255,255,.05); }
+  .eta { font-size:12px; color:var(--muted); }
+  .qty { display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:7px; }
+  .qty b { min-width:46px; text-align:center; font-size:15px; transition:transform .15s, color .15s; }
+  .qty b.pop { transform:scale(1.25); color:var(--ember); }
+  .qty button { width:38px; height:38px; border:0; border-radius:11px; font-size:20px; font-weight:700; cursor:pointer; color:#fff;
+    background:linear-gradient(135deg,var(--fire),#c4200a); box-shadow:0 4px 14px rgba(255,59,31,.4); transition:transform .12s; }
+  .qty button:active:not(:disabled) { transform:scale(.88); }
+  .qty button:disabled { opacity:.25; box-shadow:none; cursor:default; }
+  button:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+
+  .bar { position:fixed; z-index:20; left:0; right:0; bottom:0; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+    background:linear-gradient(180deg,transparent,rgba(8,4,20,.92) 40%); display:none; }
+  .bar.show { display:block; }
+  .go { display:block; width:100%; max-width:496px; margin:0 auto; height:52px; border:0; border-radius:14px; cursor:pointer;
+    font-size:16px; font-weight:800; color:#fff; background:linear-gradient(100deg,#ff3b1f,#ff8a1f,#ff3b1f); background-size:200% 100%;
+    box-shadow:0 8px 30px rgba(255,59,31,.55); }
+  .bar.show .go { animation:flow 3s linear infinite; }
+  @keyframes flow { to { background-position:-200% 0; } }
+
+  .overlay { position:fixed; z-index:30; inset:0; background:rgba(0,0,0,.65); display:none; align-items:flex-end; justify-content:center; }
+  .overlay.show { display:flex; }
+  .sheet { width:100%; max-width:520px; background:linear-gradient(180deg,#2a1210,#140808); border-top:1px solid var(--fire);
+    border-radius:20px 20px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px)); max-height:82%; overflow-y:auto;
+    box-shadow:0 -10px 50px rgba(255,59,31,.35); }
+  .sheet h3 { font-family:var(--display); font-weight:400; font-size:22px; margin:0 0 6px; }
+  .sheet p { font-size:13.5px; color:var(--muted); line-height:1.5; margin:10px 0 14px; }
+  .row { display:flex; justify-content:space-between; gap:10px; padding:8px 0; font-size:14px; border-bottom:1px solid var(--line); }
+  .row.total { border:0; font-weight:800; font-size:17px; padding-top:12px; }
+  .close { display:block; margin:8px auto 0; background:none; border:0; color:var(--ember); font-size:15px; cursor:pointer; padding:8px; }
+  @media (prefers-reduced-motion: no-preference) { .sheet { animation:up .25s ease-out; } @keyframes up { from { transform:translateY(50px); opacity:0; } } }
+  @media (prefers-reduced-motion: reduce) { .card, .pic svg { transition:none; } .bar.show .go { animation:none; } #embers { display:none; } }
+</style>
+
+</head>
+<body>
+<canvas id="embers" aria-hidden="true"></canvas>
+<div class="scene" id="scene" aria-hidden="true"></div>
+<div class="wrap">
+  <h1>dirtyshopp27</h1>
+  <p class="sub">Цена, время и место встречи — через админа</p>
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+</div>
+<div class="bar" id="bar"><button class="go" id="checkout" type="button"></button></div>
+
+<script>
+var tg = window.Telegram && window.Telegram.WebApp;
+var inTG = !!(tg && tg.initData);
+if (tg) {
+  tg.ready(); tg.expand();
+  try { tg.setHeaderColor("#080414"); tg.setBackgroundColor("#080414"); } catch (e) {}
+}
+
+var LABELS = { in_stock:"В наличии", preorder:"Предзаказ", out:"Нет в наличии" };
+var CATS = [
+  { id:"all", name:"Все" }, { id:"liquid", name:"Жижки" }, { id:"vape", name:"Вейпы" },
+  { id:"snus", name:"Снюсы" }, { id:"disp", name:"Одноразки" }, { id:"energy", name:"Энергетики" }
+];
+var COLORS = { liquid:"#b52ee6", vape:"#2ec4b6", snus:"#ff8a1f", disp:"#4a7fc0", energy:"#3fcf6e" };
+var products = [], cart = {}, current = "all";
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+  });
+}
+
+function placeholder(color, i) {
+  return '<svg viewBox="0 0 100 100" aria-hidden="true"><defs>' +
+    '<radialGradient id="g' + i + '" cx="50%" cy="42%" r="75%"><stop offset="0" stop-color="' + color + '" stop-opacity=".95"/><stop offset="1" stop-color="#120708"/></radialGradient></defs>' +
+    '<rect width="100" height="100" fill="url(#g' + i + ')"/>' +
+    '<circle cx="50" cy="50" r="27" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="4"/>' +
+    '<circle cx="50" cy="50" r="17" fill="rgba(255,255,255,.14)"/><circle cx="50" cy="50" r="5" fill="#fff"/></svg>';
+}
+
+var AREAS = [ { id:"ilinka", name:"Ильинка" }, { id:"nekrasovka", name:"Некрасовка" }, { id:"yuzhny", name:"Южный" }, { id:"krechka", name:"Красная речка" } ];
+function normProduct(p) {
+  var st = {};
+  AREAS.forEach(function (a) {
+    var v;
+    if (p.areas && !Array.isArray(p.areas)) v = p.areas[a.id] || "out";
+    else if (Array.isArray(p.areas)) v = (p.status !== "out" && p.areas.indexOf(a.id) !== -1) ? (p.status === "preorder" ? "preorder" : "in_stock") : "out";
+    else v = p.status || "in_stock";
+    st[a.id] = v;
+  });
+  p._st = st;
+  var vals = AREAS.map(function (a) { return st[a.id]; });
+  p.status = vals.indexOf("in_stock") !== -1 ? "in_stock" : (vals.indexOf("preorder") !== -1 ? "preorder" : "out");
+  return p;
+}
+function areasHTML(p) {
+  var groups = [ ["in_stock", "Есть в", "Есть во всех районах", "on"], ["preorder", "Предзаказ в", "Предзаказ во всех районах", "pre"], ["out", "Нет в наличии", "Нет в наличии во всех районах", "no"] ];
+  return '<div class="areas">' + groups.map(function (g) {
+    var names = AREAS.filter(function (a) { return p._st[a.id] === g[0]; }).map(function (a) { return a.name; });
+    if (!names.length) return "";
+    var text = names.length === AREAS.length ? '<span>' + g[2] + '</span>' : '<span>' + g[1] + ':</span> ' + names.join(", ");
+    return '<div class="ar ' + g[3] + '">' + text + '</div>';
+  }).join("") + '</div>';
+}
+
+function drawTabs() {
+  var t = document.getElementById("tabs");
+  t.innerHTML = "";
+  CATS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.textContent = c.name; b.dataset.cat = c.id;
+    b.setAttribute("aria-pressed", c.id === current ? "true" : "false");
+    t.appendChild(b);
+  });
+}
+
+/* сетка перерисовывается только при смене раздела, не при нажатии + / − */
+function drawGrid() {
+  var grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  var list = products.filter(function (p) { return current === "all" || p.cat === current; });
+  if (!list.length) { grid.innerHTML = '<div class="empty">В этом разделе пока пусто</div>'; return; }
+  list.forEach(function (p) {
+    var i = products.indexOf(p), off = p.status === "out", q = cart[p.id] || 0;
+    var color = p.color || COLORS[p.cat] || "#ff3b1f";
+    var el = document.createElement("div");
+    el.className = "cell" + (off ? " off" : "");
+    el.dataset.id = p.id;
+    el.innerHTML = '<div class="card"><div class="pic">' +
+      (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease">' : placeholder(color, i)) +
+      '</div><div class="info"><div class="name">' + esc(p.name) + '</div>' +
+      '<div class="price">' + esc(p.price) + ' €</div>' +
+      '<div class="badge ' + esc(p.status) + '">' + (LABELS[p.status] || "") + '</div>' +
+      (p.eta && Object.keys(p._st).some(function (k) { return p._st[k] === "preorder"; }) ? '<div class="eta">' + esc(p.eta) + '</div>' : '') +
+      areasHTML(p) +
+      '<div class="qty"><button type="button" aria-label="Убрать" class="minus" data-d="-1"' + (off || !q ? " disabled" : "") + '>−</button>' +
+      '<b>' + q + ' шт</b>' +
+      '<button type="button" aria-label="Добавить" data-d="1"' + (off ? " disabled" : "") + '>+</button></div></div></div>';
+    var img = el.querySelector("img");
+    if (img) img.addEventListener("error", function () { img.parentNode.innerHTML = placeholder(color, i); });
+    grid.appendChild(el);
+  });
+}
+
+function totals() {
+  var t = 0, n = 0;
+  products.forEach(function (p) { var q = cart[p.id] || 0; t += q * p.price; n += q; });
+  return { t:t, n:n };
+}
+
+function updateBar() {
+  var s = totals(), text = "Оформить (" + s.n + " шт, " + s.t + " €)";
+  if (inTG) {
+    if (s.n > 0) { tg.MainButton.setParams({ text:text, color:"#ff3b1f", text_color:"#ffffff" }); tg.MainButton.show(); }
+    else tg.MainButton.hide();
+  } else {
+    document.getElementById("bar").classList.toggle("show", s.n > 0);
+    document.getElementById("checkout").textContent = text;
+  }
+}
+
+function sendOrder() {
+  var items = Object.keys(cart).map(function (id) { return { id:id, qty:cart[id] }; });
+  if (!items.length) return;
+  if (inTG) tg.sendData(JSON.stringify({ items:items }));
+  else alert("Откройте магазин через бота, чтобы отправить заказ.");
+}
+if (inTG) tg.MainButton.onClick(sendOrder);
+document.getElementById("checkout").addEventListener("click", sendOrder);
+
+document.getElementById("tabs").addEventListener("click", function (e) {
+  var b = e.target.closest(".tab");
+  if (!b) return;
+  current = b.dataset.cat;
+  Array.prototype.forEach.call(this.children, function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+  drawGrid();
+});
+
+document.getElementById("grid").addEventListener("click", function (e) {
+  var b = e.target.closest("button[data-d]");
+  if (!b) return;
+  var cell = b.closest(".cell"), id = cell.dataset.id, d = parseInt(b.dataset.d, 10);
+  cart[id] = Math.max(0, (cart[id] || 0) + d);
+  if (!cart[id]) delete cart[id];
+  var q = cart[id] || 0, num = cell.querySelector("b");
+  num.textContent = q + " шт";
+  cell.querySelector(".minus").disabled = !q;
+  num.classList.add("pop");
+  setTimeout(function () { num.classList.remove("pop"); }, 150);
+  if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.selectionChanged(); } catch (e2) {} }
+  updateBar();
+});
+
+/* искры, летящие вверх; на скрытой вкладке анимация встаёт на паузу */
+(function () {
+  var cv = document.getElementById("embers"), cx = cv.getContext("2d"), W, H, parts = [], run = true;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  size(); addEventListener("resize", size);
+  document.addEventListener("visibilitychange", function () { run = !document.hidden; if (run) loop(); });
+  function mk(init) {
+    return { x:Math.random() * W, y:init ? Math.random() * H : H + 10, r:Math.random() * 1.8 + .6,
+             vy:Math.random() * .7 + .25, dx:(Math.random() - .5) * .4, ph:Math.random() * 6.28,
+             c:Math.random() < .7 ? "190,130,255" : "255,150,230" };
+  }
+  for (var i = 0; i < 30; i++) parts.push(mk(true));
+  function loop() {
+    if (!run) return;
+    cx.clearRect(0, 0, W, H);
+    parts.forEach(function (p, i) {
+      p.y -= p.vy; p.ph += .03; p.x += p.dx + Math.sin(p.ph) * .35;
+      var a = Math.max(0, Math.min(1, p.y / H)) * .85;
+      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.28);
+      cx.fillStyle = "rgba(" + p.c + "," + a + ")"; cx.fill();
+      if (p.y < -10) parts[i] = mk(false);
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* зомби ходят туда-сюда, вейпы парят и пускают дым */
+(function () {
+  var scene = document.getElementById("scene");
+  function zombie(n, k) {
+    var sk = 'url(#sk' + n + ')', hd = 'url(#hd' + n + ')', O = '#17171f';
+    return '<svg viewBox="0 0 80 110" aria-hidden="true"><defs>' +
+      '<linearGradient id="sk' + n + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + k.sl + '"/><stop offset="1" stop-color="' + k.sd + '"/></linearGradient>' +
+      '<linearGradient id="hd' + n + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + k.hl + '"/><stop offset="1" stop-color="' + k.hd + '"/></linearGradient>' +
+      '<linearGradient id="cp' + n + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52526a"/><stop offset="1" stop-color="#0e0e14"/></linearGradient></defs>' +
+      /* задняя нога */
+      '<g class="leg b"><rect x="27" y="72" width="11" height="28" rx="5" fill="#2b3a66" stroke="' + O + '" stroke-width="2"/>' +
+      '<rect x="22" y="98" width="23" height="9" rx="4.5" fill="#fff" stroke="' + O + '" stroke-width="2"/><rect x="22" y="98" width="23" height="4" rx="2" fill="' + k.hl + '"/></g>' +
+      '<g class="zb">' +
+      /* передняя нога */
+      '<g class="leg"><rect x="38" y="72" width="11" height="28" rx="5" fill="#3d56a0" stroke="' + O + '" stroke-width="2"/>' +
+      '<path d="M38 84 l11 -2 v4 l-11 2z" fill="#2b3a66"/>' +
+      '<rect x="33" y="98" width="23" height="9" rx="4.5" fill="#fff" stroke="' + O + '" stroke-width="2"/><rect x="33" y="98" width="23" height="4" rx="2" fill="' + k.hl + '"/></g>' +
+      /* худи */
+      '<rect x="20" y="46" width="33" height="35" rx="12" fill="' + hd + '" stroke="' + O + '" stroke-width="2"/>' +
+      '<path d="M27 68 h20 l-2 9 h-16z" fill="rgba(0,0,0,.22)"/>' +
+      '<path d="M31 48 v11 M40 48 v11" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<path d="M24 52 Q27 49 31 50" stroke="rgba(255,255,255,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+      /* рука */
+      '<g class="arm"><rect x="44" y="52" width="19" height="11" rx="5.5" fill="' + hd + '" stroke="' + O + '" stroke-width="2"/>' +
+      '<ellipse cx="67" cy="57.5" rx="8" ry="6.5" fill="' + sk + '" stroke="' + O + '" stroke-width="2"/>' +
+      '<circle cx="74" cy="53.5" r="3" fill="' + sk + '" stroke="' + O + '" stroke-width="1.6"/><circle cx="75.5" cy="58.5" r="3" fill="' + sk + '" stroke="' + O + '" stroke-width="1.6"/><circle cx="73" cy="63" r="2.8" fill="' + sk + '" stroke="' + O + '" stroke-width="1.6"/></g>' +
+      /* голова */
+      '<ellipse cx="14" cy="34" rx="4" ry="6" fill="' + sk + '" stroke="' + O + '" stroke-width="2"/>' +
+      '<ellipse cx="35" cy="31" rx="22" ry="20" fill="' + sk + '" stroke="' + O + '" stroke-width="2.4"/>' +
+      '<path d="M17 42 Q35 56 53 42 Q52 50 35 53 Q20 50 17 42z" fill="rgba(0,60,20,.2)"/>' +
+      '<path d="M21 40 l8 2 M22.5 37 l1.5 6 M26 38 l1 5" stroke="#1d2a1f" stroke-width="1.3" fill="none" stroke-linecap="round"/>' +
+      /* глаза */
+      '<circle cx="45" cy="29" r="9" fill="#fff6f2" stroke="#6b1010" stroke-width="1.6"/>' +
+      '<path d="M38 25 l4 2.5 M37 31 l5 -1 M52 23 l-4 3.5 M53 32 l-5 -1.5" stroke="#e23a3a" stroke-width="1.1" stroke-linecap="round"/>' +
+      '<circle cx="46.5" cy="30" r="4" fill="#e11a1a"/><circle cx="47" cy="30.3" r="1.8" fill="#240000"/><circle cx="45.2" cy="28.4" r="1.2" fill="#fff"/>' +
+      '<circle cx="28" cy="32" r="5.2" fill="#fff" stroke="' + O + '" stroke-width="1.4"/><circle cx="29.2" cy="32.6" r="2.6" fill="#e11a1a"/><circle cx="29.6" cy="32.8" r="1.2" fill="#240000"/>' +
+      '<path d="M36 19 L54 24 M21 25 L34 28" stroke="' + O + '" stroke-width="2.6" stroke-linecap="round"/>' +
+      /* пасть, зубы, язык, слюна */
+      '<path d="M29 43 Q42 61 57 44 Q43 48 29 43z" fill="#55101c" stroke="' + O + '" stroke-width="1.8"/>' +
+      '<ellipse cx="43" cy="52" rx="6" ry="3.2" fill="#ff6b8a"/>' +
+      '<rect x="32" y="43.3" width="3.4" height="5" rx="1" fill="#fff3c4"/><rect x="37.5" y="44.8" width="3.4" height="4" rx="1" fill="#fff3c4"/><rect x="47" y="44.8" width="3.4" height="4.5" rx="1" fill="#fff3c4"/><rect x="52" y="43.2" width="3" height="4" rx="1" fill="#fff3c4"/>' +
+      '<path d="M51 52 q2.5 6 0 10 q-3.5 -3.5 0 -10z" fill="#c8f7ff" stroke="#6bb9c9" stroke-width=".8"/>' +
+      '<path d="M22 21 Q27 13 38 14" stroke="rgba(255,255,255,.55)" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+      /* кепка задом наперёд */
+      '<path d="M12 26 Q13 4 35 4 Q58 4 58 26 Q35 20 12 26z" fill="url(#cp' + n + ')" stroke="#0b0b10" stroke-width="2.2"/>' +
+      '<path d="M15 24 L-3 21 Q-5 28 16 29z" fill="' + k.hl + '" stroke="#0b0b10" stroke-width="2"/>' +
+      '<rect x="42" y="19" width="16" height="4" rx="2" fill="' + k.hl + '"/>' +
+      '<path d="M28 14 l3.5 -7 3.5 4.5 3.5 -4.5 3.5 7 z" fill="#fff" stroke="#0b0b10" stroke-width=".9"/>' +
+      '<path d="M22 12 Q31 6 42 8" stroke="rgba(255,255,255,.4)" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+      '</g></svg>';
+  }
+  [ { h:130, b:2, o:.95, t:30, d:0, k:{ sl:"#c8f2a0", sd:"#5fa85a", hl:"#ff5a3c", hd:"#a3140f" } },
+    { h:92, b:15, o:.7, t:38, d:-14, k:{ sl:"#a8f0e0", sd:"#3f9fa0", hl:"#b866ff", hd:"#5a1aa6" } },
+    { h:66, b:34, o:.5, t:46, d:-24, k:{ sl:"#e6f59a", sd:"#7aa83a", hl:"#ffb03a", hd:"#c25a00" } } ].forEach(function (z, i) {
+    var w = document.createElement("div");
+    w.className = "zw";
+    w.style.cssText = "--h:" + z.h + "px;--w:" + Math.round(z.h * .7) + "px;--b:" + z.b + "vh;--o:" + z.o + ";--t:" + z.t + "s;--d:" + z.d + "s";
+    w.innerHTML = '<div class="zf">' + zombie(i, z.k) + '</div>';
+    scene.appendChild(w);
+  });
+  var C2 = { "#ff3b1f":"#ffd23a", "#b52ee6":"#ff6bd6", "#2ec4b6":"#8dffb4", "#ff8a1f":"#fff27a" };
+  function vape(c) {
+    var c2 = C2[c] || "#fff", id = c.slice(1), O = '#0d0d14';
+    return '<svg viewBox="0 0 40 100" aria-hidden="true"><defs>' +
+      '<linearGradient id="vb' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c2 + '"/><stop offset=".55" stop-color="' + c + '"/><stop offset="1" stop-color="' + c + '"/></linearGradient>' +
+      '<linearGradient id="vm' + id + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9aa0b4"/><stop offset=".5" stop-color="#f2f4fa"/><stop offset="1" stop-color="#6c7288"/></linearGradient></defs>' +
+      '<rect x="14" y="2" width="12" height="19" rx="5" fill="url(#vm' + id + ')" stroke="' + O + '" stroke-width="2"/>' +
+      '<rect x="8" y="16" width="24" height="81" rx="11" fill="url(#vb' + id + ')" stroke="' + O + '" stroke-width="2.2"/>' +
+      '<rect x="8" y="80" width="24" height="17" rx="9" fill="rgba(0,0,0,.28)"/>' +
+      '<rect x="12" y="22" width="4.5" height="56" rx="2.2" fill="#fff" opacity=".4"/>' +
+      '<rect x="18" y="28" width="11" height="24" rx="3" fill="' + O + '"/>' +
+      '<rect x="20" y="31" width="7" height="3" rx="1.5" fill="' + c2 + '"/><rect x="20" y="37" width="5" height="3" rx="1.5" fill="#fff"/><rect class="led" x="20" y="43" width="7" height="3" rx="1.5" fill="' + c2 + '"/>' +
+      '<circle cx="20" cy="68" r="5.5" fill="' + O + '"/><circle class="led" cx="20" cy="68" r="3.4" fill="' + c2 + '"/>' +
+      '<path d="M13 90 h14" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/></svg>';
+  }
+  [ { l:"5%", t:"16%", c:"#ff3b1f", r:"-14deg", ft:"6s", fd:"0s" }, { l:"86%", t:"28%", c:"#b52ee6", r:"16deg", ft:"7s", fd:"-2s" },
+    { l:"9%", t:"58%", c:"#2ec4b6", r:"10deg", ft:"8s", fd:"-4s" }, { l:"88%", t:"66%", c:"#ff8a1f", r:"-18deg", ft:"6.5s", fd:"-1s" } ].forEach(function (v) {
+    var e = document.createElement("div");
+    e.className = "vp";
+    e.style.cssText = "left:" + v.l + ";top:" + v.t + ";--c:" + v.c + ";--r:" + v.r + ";--ft:" + v.ft + ";--fd:" + v.fd;
+    e.innerHTML = vape(v.c) + '<span class="puff"></span><span class="puff"></span><span class="puff"></span>';
+    scene.appendChild(e);
+  });
+})();
+
+
+/* дым (медленные цветные облака позади всего) и пар (белые клубы поднимаются снизу) */
+(function () {
+  var scene = document.getElementById("scene");
+  [ { x:"-10vw", y:"4vh", c:"rgba(150,70,255,.32)", d:"24s", l:"0s" },
+    { x:"38vw", y:"22vh", c:"rgba(255,70,200,.22)", d:"28s", l:"-9s" },
+    { x:"-5vw", y:"52vh", c:"rgba(60,130,255,.24)", d:"26s", l:"-14s" },
+    { x:"48vw", y:"66vh", c:"rgba(200,150,255,.2)", d:"30s", l:"-5s" } ].forEach(function (f) {
+    var e = document.createElement("div");
+    e.className = "fog";
+    e.style.cssText = "--x:" + f.x + ";--y:" + f.y + ";--fc:" + f.c + ";--fdur:" + f.d + ";--fdl:" + f.l;
+    scene.insertBefore(e, scene.firstChild);
+  });
+  [ { x:"4%", w:"26vw", d:"11s", l:"0s", dx:"6vw" }, { x:"18%", w:"20vw", d:"13s", l:"-4s", dx:"-5vw" },
+    { x:"32%", w:"28vw", d:"10s", l:"-7s", dx:"7vw" }, { x:"46%", w:"22vw", d:"14s", l:"-2s", dx:"-6vw" },
+    { x:"60%", w:"26vw", d:"12s", l:"-9s", dx:"5vw" }, { x:"74%", w:"20vw", d:"11s", l:"-5s", dx:"-7vw" },
+    { x:"86%", w:"24vw", d:"13s", l:"-11s", dx:"-4vw" } ].forEach(function (w) {
+    var e = document.createElement("div");
+    e.className = "wisp";
+    e.style.cssText = "--x:" + w.x + ";--ww:" + w.w + ";--wd:" + w.d + ";--wdl:" + w.l + ";--wx:" + w.dx;
+    scene.appendChild(e);
+  });
+})();
+
+/* банки снюса: крышка открывается, пакетик выглядывает, вылетают искры */
+(function () {
+  var scene = document.getElementById("scene");
+  function tin(c, c2) {
+    var id = c.slice(1), O = '#0d0d14';
+    return '<svg viewBox="0 0 60 60" aria-hidden="true"><defs>' +
+      '<linearGradient id="sb' + id + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + c + '"/><stop offset=".45" stop-color="' + c2 + '"/><stop offset="1" stop-color="' + c + '"/></linearGradient>' +
+      '<linearGradient id="lm' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f6fb"/><stop offset=".5" stop-color="#aab0c4"/><stop offset="1" stop-color="#6c7288"/></linearGradient></defs>' +
+      '<path d="M5 26 v22 a25 9 0 0 0 50 0 v-22z" fill="url(#sb' + id + ')" stroke="' + O + '" stroke-width="2"/>' +
+      '<path d="M5 34 v9 a25 9 0 0 0 50 0 v-9 a25 9 0 0 1 -50 0z" fill="rgba(255,255,255,.88)"/>' +
+      '<circle cx="30" cy="47" r="3.2" fill="' + c + '"/>' +
+      '<ellipse cx="30" cy="25" rx="23" ry="8" fill="#1b0f10" stroke="' + O + '" stroke-width="1.5"/>' +
+      '<rect x="14" y="23" width="11" height="5.5" rx="2.7" transform="rotate(-8 19 25)" fill="#f3ead4" stroke="#b9ab8a" stroke-width=".8"/>' +
+      '<rect x="34" y="23" width="11" height="5.5" rx="2.7" transform="rotate(7 39 25)" fill="#f3ead4" stroke="#b9ab8a" stroke-width=".8"/>' +
+      '<rect class="pouch up" x="23" y="21" width="12" height="6" rx="3" fill="#fff8e6" stroke="#b9ab8a" stroke-width=".8"/>' +
+      '<g class="lid"><path d="M5 25 v4 a25 9 0 0 0 50 0 v-4z" fill="#7d849c" stroke="' + O + '" stroke-width="1.6"/>' +
+      '<ellipse cx="30" cy="25" rx="25" ry="9" fill="url(#lm' + id + ')" stroke="' + O + '" stroke-width="2"/>' +
+      '<ellipse cx="30" cy="25" rx="18" ry="6" fill="' + c + '" opacity=".75"/>' +
+      '<ellipse cx="22" cy="23" rx="6" ry="1.6" fill="#fff" opacity=".6"/></g>' +
+      '<path class="spark" d="M30 8 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="' + c2 + '"/>' +
+      '<path class="spark s2" d="M12 14 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2z" fill="#fff"/>' +
+      '<path class="spark s3" d="M49 12 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2 -3 -3 -1.2 3 -1.2z" fill="' + c2 + '"/></svg>';
+  }
+  [ { l:"70%", t:"8%", c:"#ff3b1f", c2:"#ffd23a", r:"8deg", ft:"7s", fd:"-1s", od:"0s" },
+    { l:"1%", t:"40%", c:"#2ec4b6", c2:"#9bffd2", r:"-10deg", ft:"8s", fd:"-3s", od:"-1.5s" },
+    { l:"72%", t:"50%", c:"#b52ee6", c2:"#ff8be0", r:"12deg", ft:"6.5s", fd:"-5s", od:"-3s" },
+    { l:"40%", t:"84%", c:"#ff8a1f", c2:"#fff08a", r:"-6deg", ft:"7.5s", fd:"-2s", od:"-4.5s" } ].forEach(function (s) {
+    var e = document.createElement("div");
+    e.className = "sn";
+    e.style.cssText = "left:" + s.l + ";top:" + s.t + ";--c:" + s.c + ";--r:" + s.r + ";--ft:" + s.ft + ";--fd:" + s.fd + ";--od:" + s.od;
+    e.innerHTML = tin(s.c, s.c2);
+    scene.appendChild(e);
+  });
+})();
+
+drawTabs();
+var FALLBACK = [{"id": "p1", "cat": "liquid", "name": "Жижка 1", "price": 12, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "preorder"}, "eta": "ждём поставку, около 3 дней"}, {"id": "p2", "cat": "liquid", "name": "Жижка 2", "price": 12, "image": "", "status": "in_stock", "eta": "ждём поставку, около 3 дней", "areas": {"ilinka": "in_stock", "nekrasovka": "preorder", "yuzhny": "preorder", "krechka": "out"}}, {"id": "p3", "cat": "vape", "name": "Вейп 1", "price": 25, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p4", "cat": "vape", "name": "Вейп 2", "price": 30, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}, {"id": "p5", "cat": "snus", "name": "Снюс 1", "price": 9, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}}, {"id": "p6", "cat": "snus", "name": "Снюс 2", "price": 10, "image": "", "status": "preorder", "eta": "ждём поставку, около недели", "areas": {"ilinka": "out", "nekrasovka": "preorder", "yuzhny": "out", "krechka": "preorder"}}, {"id": "p7", "cat": "disp", "name": "Одноразка 1", "price": 14, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p8", "cat": "disp", "name": "Одноразка 2", "price": 15, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}}, {"id": "p9", "cat": "energy", "name": "Энергетик 1", "price": 3, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p10", "cat": "energy", "name": "Энергетик 2", "price": 3, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}];
+fetch("products.json?t=" + Date.now())
+  .then(function (r) { if (!r.ok) throw new Error("no products.json"); return r.json(); })
+  .then(function (d) { products = d.map(normProduct); drawGrid(); updateBar(); })
+  .catch(function () { products = FALLBACK.map(normProduct); drawGrid(); updateBar(); });
+</script>
+</body>
+</html>
