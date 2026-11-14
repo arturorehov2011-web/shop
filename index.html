@@ -4,7 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>dirtyshopp27</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js">
+/* MENU_BUTTON_ORDER_PATCH */
+if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.sendData = function(raw) {
+    try {
+      var d = JSON.parse(raw);
+      var code = 'ord_' + (d.area || 'ilinka') + '_' + (d.items || []).map(function(i){ return i.id + '-' + i.qty; }).join('_');
+      window.Telegram.WebApp.openTelegramLink('https://t.me/dirdirtyshopp27_bot?start=' + code);
+      setTimeout(function(){ window.Telegram.WebApp.close(); }, 150);
+    } catch(e) { alert(e); }
+  };
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
