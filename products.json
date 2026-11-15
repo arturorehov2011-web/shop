@@ -1,12 +1,301 @@
 [
-  {"id": "p1", "cat": "liquid", "name": "Жижка 1", "price": 12, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "preorder"}, "eta": "ждём поставку, около 3 дней"},
-  {"id": "p2", "cat": "liquid", "name": "Жижка 2", "price": 12, "image": "", "status": "in_stock", "eta": "ждём поставку, около 3 дней", "areas": {"ilinka": "in_stock", "nekrasovka": "preorder", "yuzhny": "preorder", "krechka": "out"}},
-  {"id": "p3", "cat": "vape", "name": "Вейп 1", "price": 25, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
-  {"id": "p4", "cat": "vape", "name": "Вейп 2", "price": 30, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}},
-  {"id": "p5", "cat": "snus", "name": "Снюс 1", "price": 9, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}},
-  {"id": "p6", "cat": "snus", "name": "Снюс 2", "price": 10, "image": "", "status": "preorder", "eta": "ждём поставку, около недели", "areas": {"ilinka": "out", "nekrasovka": "preorder", "yuzhny": "out", "krechka": "preorder"}},
-  {"id": "p7", "cat": "disp", "name": "Одноразка 1", "price": 14, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
-  {"id": "p8", "cat": "disp", "name": "Одноразка 2", "price": 15, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}},
-  {"id": "p9", "cat": "energy", "name": "Энергетик 1", "price": 3, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}},
-  {"id": "p10", "cat": "energy", "name": "Энергетик 2", "price": 3, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}
-]
+  {
+    "id": "p1",
+    "cat": "vape",
+    "name": "Brusko Nevoks (черный)",
+    "price": 999,
+    "image": "https://i.postimg.cc/SRBybs60/Max-a-Sozdaj-kartocku-tova.png",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p2",
+    "cat": "vape",
+    "name": "Xros 6 Mini (зеленый, розово-фиолетовый, серый)",
+    "price": 2700,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p3",
+    "cat": "vape",
+    "name": "Xros 6 (серый, черный)",
+    "price": 2900,
+    "image": "https://i.postimg.cc/m274FT3r/5460927046172221267.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p4",
+    "cat": "vape",
+    "name": "Pasito II (шоколадный)",
+    "price": 3200,
+    "image": "https://i.postimg.cc/vBZkqs6T/5460927046172221272.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p5",
+    "cat": "vape",
+    "name": "Aegis Boost III (красный)",
+    "price": 3350,
+    "image": "https://i.postimg.cc/1XNW25R1/5460927046172221271.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p6",
+    "cat": "vape",
+    "name": "Knight 80 (серый)",
+    "price": 3200,
+    "image": "",
+    "status": "in_stock",
+    "eta": "АКБ докупается отдельно!",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p7",
+    "cat": "vape",
+    "name": "🔥 НОВИНКА Aegis Hero 5 Racing Collection (желтый)",
+    "price": 3150,
+    "image": "https://i.postimg.cc/Px1yQVSQ/5460927046172221268.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p8",
+    "cat": "vape",
+    "name": "АКБ Самсунг (Огурчик)",
+    "price": 420,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p9",
+    "cat": "vape",
+    "name": "Картриджи XROS 0.4 Ом и 0.6 Ом (в наличии 0.4 Ом)",
+    "price": 380,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p10",
+    "cat": "vape",
+    "name": "Испары серии Boost (50-58 ватт)",
+    "price": 400,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p11",
+    "cat": "vape",
+    "name": "Испары Knight / Pasito (50-65 ватт)",
+    "price": 400,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p12",
+    "cat": "vape",
+    "name": "Презервативы Злая Монашка (1 шт)",
+    "price": 60,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p13",
+    "cat": "liquid",
+    "name": "Проклятая невеста 80мг (ананас апельсин лед, кислый ананас личи, кола лимон лед, кислая клубника и черная смородина, малина ананас маракуйя и лед, кислая малина ежевика, вишня виноград лед)",
+    "price": 520,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p14",
+    "cat": "liquid",
+    "name": "Самоубийца v2 DANGER 100мг (мультифрукт, смузи клубника манго лайм, мармеладный энергетик, лит энерджи классик, ягодная жвачка, лит энерджи персик)",
+    "price": 520,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p15",
+    "cat": "liquid",
+    "name": "Самоубийца v2 ACID 70мг (кислый тархун с земляникой, кислая облепиха с вишней, кислая слива с апельсином, кислый мятный лимон с арбузом)",
+    "price": 520,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p16",
+    "cat": "liquid",
+    "name": "Злая монашка & Хотспот 70мг (красный апельсин со специями)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p17",
+    "cat": "liquid",
+    "name": "Злая монашка 70мг (пина колада)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p18",
+    "cat": "liquid",
+    "name": "Злая монашка BUBBLE 80мг (ежевика виноград ментос, вишневый тик так, кислая мармеладная лента)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p19",
+    "cat": "liquid",
+    "name": "Злая монашка SWEET 80мг (редбулл малина, ежевика малина мята, энергетик смородина, малина персик, малиновый бабл гам)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p20",
+    "cat": "liquid",
+    "name": "Злая монашка & Duall 70мг (кислая смородина виноград, кислый цитрусовый микс, кислая малина ежевика)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p21",
+    "cat": "liquid",
+    "name": "Злая монашка 70мг SOUR (кислая смородина лимон, лимонная кислота с клюквой, кислый нектарин со сливой)",
+    "price": 500,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p22",
+    "cat": "liquid",
+    "name": "Rick and Morty 70мг (компот из клюквы и смородины, смородина голубика, черная смородина)",
+    "price": 480,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p23",
+    "cat": "liquid",
+    "name": "Rick and Morty 🧟‍♀️ 70мг (лесные ягоды, ягодный бабл гам, персик манго, скитлс лимон лайм, арбузная жвачка)",
+    "price": 480,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p24",
+    "cat": "liquid",
+    "name": "Rick and Morty BAD ACID 70мг (мармеладные ягоды)",
+    "price": 480,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p25",
+    "cat": "liquid",
+    "name": "Monstervapor 50мг (грейпфрут смородина)",
+    "price": 450,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p26",
+    "cat": "liquid",
+    "name": "Skala 50мг (груша со льдом)",
+    "price": 450,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p27",
+    "cat": "disp",
+    "name": "RICK AND MORTY BOTTLE 24000 тяг (черничные мармеладные червячки)",
+    "price": 1550,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+  {
+    "id": "p28",
+    "cat": "snus",
+    "name": "Злая монашка 120мг (энергетик черника)",
+    "price": 450,
+    "image": "",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+{
+    "id": "p29",
+    "cat": "vape",
+    "name": "xros nano 5 (белый)",
+    "price": 2900,
+    "image": "https://i.postimg.cc/VkSNhxnT/5460927046172221265.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  },
+{
+    "id": "p30",
+    "cat": "vape",
+    "name": "brusco micool (оранжевый)",
+    "price": 650,
+    "image": "https://i.postimg.cc/pLVSXvqz/5460927046172221266.jpg",
+    "status": "in_stock",
+    "eta": "",
+    "areas": { "ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock" }
+  }]

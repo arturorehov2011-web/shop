@@ -293,7 +293,7 @@ function drawGrid() {
     el.innerHTML = '<article class="card"><div class="pic">' +
       (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy">' : placeholder(color, i)) +
       '<span class="chip ' + esc(p.status) + '"><i></i>' + (LABELS[p.status] || "") + '</span></div>' +
-      '<div class="info"><div class="price">' + esc(p.price) + ' €</div>' +
+      '<div class="info"><div class="price">' + esc(p.price) + ' ₽</div>' +
       '<h3 class="name">' + esc(p.name) + '</h3>' +
       (hasEta ? '<div class="eta">' + esc(p.eta) + '</div>' : '') +
       areasHTML(p) +
@@ -313,12 +313,12 @@ function totals() {
 function updateBar() {
   var s = totals();
   if (inTG) {
-    if (s.n > 0 && !sheetOpen) { tg.MainButton.setParams({ text:"Оформить заказ · " + s.n + " шт · " + s.t + " €", color:"#7c4dff", text_color:"#ffffff" }); tg.MainButton.show(); }
+    if (s.n > 0 && !sheetOpen) { tg.MainButton.setParams({ text:"Оформить заказ · " + s.n + " шт · " + s.t + " ₽", color:"#7c4dff", text_color:"#ffffff" }); tg.MainButton.show(); }
     else tg.MainButton.hide();
   } else {
     document.getElementById("bar").classList.toggle("show", s.n > 0);
     document.getElementById("cnt").textContent = "В корзине: " + s.n + " шт";
-    document.getElementById("tot").textContent = s.t + " €";
+    document.getElementById("tot").textContent = s.t + " ₽";
   }
 }
 
