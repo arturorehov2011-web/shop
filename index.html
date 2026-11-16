@@ -220,6 +220,8 @@ var CATS = [
 var COLORS = { liquid:"#8b5cf6", vape:"#3b82f6", snus:"#f59e0b", disp:"#ec4899", energy:"#10b981" };
 var AREAS = [ { id:"ilinka", name:"Ильинка" }, { id:"nekrasovka", name:"Некрасовка" }, { id:"yuzhny", name:"Южный" }, { id:"krechka", name:"Красная речка" } ];
 var products = [], cart = {}, current = "all", sheetOpen = false;
+/* сколько товара есть: поле "stock" в products.json (0 = нет в наличии) */
+function maxOf(p) { return typeof p.stock === "number" ? Math.max(0, p.stock) : 1; }
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -236,6 +238,7 @@ function normProduct(p) {
     else v = p.status || "in_stock";
     st[a.id] = v;
   });
+  if (typeof p.stock === "number" && p.stock <= 0) AREAS.forEach(function (a) { st[a.id] = "out"; });
   p._st = st;
   var vals = AREAS.map(function (a) { return st[a.id]; });
   p.status = vals.indexOf("in_stock") !== -1 ? "in_stock" : (vals.indexOf("preorder") !== -1 ? "preorder" : "out");
@@ -263,7 +266,7 @@ function placeholder(color, i) {
 function actHTML(p, q) {
   if (p.status === "out") return '<button class="btn" type="button" disabled>Нет в наличии</button>';
   if (!q) return '<button class="btn" type="button" data-d="1">' + (p.status === "preorder" ? "Предзаказ" : "В корзину") + '</button>';
-  return '<div class="step"><button type="button" data-d="-1" aria-label="Убрать">−</button><span>' + q + ' шт</span><button type="button" data-d="1" aria-label="Добавить">+</button></div>';
+  return '<div class="step"><button type="button" data-d="-1" aria-label="Убрать">−</button><span>' + q + ' шт</span><button type="button" data-d="1" aria-label="Добавить"' + (q >= maxOf(p) ? ' disabled' : '') + '>+</button></div>';
 }
 
 var curSub = "all";
@@ -330,6 +333,7 @@ function drawGrid() {
       '<div class="info"><div class="price">' + esc(p.price) + ' ₽</div>' +
       '<h3 class="name">' + esc(p.name) + '</h3>' +
       (hasEta ? '<div class="eta">' + esc(p.eta) + '</div>' : '') +
+      (p.status !== "out" && typeof p.stock === "number" ? '<div class="eta">Осталось: ' + p.stock + ' шт</div>' : '') +
       areasHTML(p) +
       '<div class="act">' + actHTML(p, q) + '</div></div></article>';
     var img = el.querySelector("img");
@@ -432,7 +436,7 @@ document.getElementById("grid").addEventListener("click", function (e) {
   var cell = b.closest(".cell"), id = cell.dataset.id, d = parseInt(b.dataset.d, 10);
   var p = products.filter(function (x) { return x.id === id; })[0];
   if (!p || p.status === "out") return;
-  cart[id] = Math.max(0, (cart[id] || 0) + d);
+  cart[id] = Math.min(maxOf(p), Math.max(0, (cart[id] || 0) + d));
   if (!cart[id]) delete cart[id];
   cell.querySelector(".act").innerHTML = actHTML(p, cart[id] || 0);
   if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.selectionChanged(); } catch (e2) {} }
