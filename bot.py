@@ -31,7 +31,7 @@ USERS_FILE = "users.json"
 
 # Для автоматического уменьшения количества: токен GitHub с правом Contents: Read and write
 # (задаётся в Render -> Environment, в код НЕ вставлять)
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "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")
 GITHUB_REPO = os.environ.get("GITHUB_REPO", "arturorehov2011-web/shop")
 GITHUB_BRANCH = os.environ.get("GITHUB_BRANCH", "main")
 GITHUB_FILE = "products.json"
