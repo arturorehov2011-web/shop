@@ -31,7 +31,7 @@ USERS_FILE = "users.json"
 
 # Для автоматического учёта количества: токен GitHub с правом Contents: Read and write
 # (задаётся в Render -> Environment, в код НЕ вставлять)
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "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").strip().strip("'\"")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip().strip("'\"")
 GITHUB_REPO = os.environ.get("GITHUB_REPO", "arturorehov2011-web/shop")
 GITHUB_BRANCH = os.environ.get("GITHUB_BRANCH", "main")
 GITHUB_FILE = "products.json"
@@ -80,10 +80,15 @@ def _gh_api():
     return f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE}"
 
 
-def _gh_401():
-    return (f"GitHub не принял токен (401): он неверный, отозван или истёк. "
-            f"Бот видит токен длиной {len(GITHUB_TOKEN)} симв., начало {GITHUB_TOKEN[:11]!r} "
-            f"(должно быть около 93 и 'github_pat_')")
+async def _gh_401(r):
+    """Подробное описание ошибки 401: что ответил GitHub и какой токен видит бот (сам токен не показывается)."""
+    try:
+        gh_msg = (await r.json(content_type=None)).get("message", "")
+    except Exception:
+        gh_msg = ""
+    src = "переменная GITHUB_TOKEN на Render" if os.environ.get("GITHUB_TOKEN") else "значение, вписанное в код"
+    return (f"GitHub 401 ({gh_msg}). Токен взят из: {src}. "
+            f"Начало {GITHUB_TOKEN[:23]!r}, конец {GITHUB_TOKEN[-4:]!r}, длина {len(GITHUB_TOKEN)}")
 
 
 async def github_change_stock(deltas, reason, warn=True, absolute=False):
@@ -97,7 +102,7 @@ async def github_change_stock(deltas, reason, warn=True, absolute=False):
                 for _ in range(3):
                     async with s.get(_gh_api(), params={"ref": GITHUB_BRANCH}) as r:
                         if r.status == 401:
-                            return False, _gh_401()
+                            return False, await _gh_401(r)
                         if r.status != 200:
                             return False, f"GitHub ответил {r.status} при чтении файла (проверь доступ токена к репозиторию shop)"
                         meta = await r.json()
@@ -117,7 +122,7 @@ async def github_change_stock(deltas, reason, warn=True, absolute=False):
                         if r.status == 409:
                             continue  # файл изменили одновременно, пробуем ещё раз
                         if r.status == 401:
-                            return False, _gh_401()
+                            return False, await _gh_401(r)
                         if r.status in (403, 404):
                             return False, f"GitHub ответил {r.status}: у токена нет права записи (нужно Contents: Read and write и доступ к репозиторию shop)"
                         return False, f"GitHub ответил {r.status} при записи файла"
