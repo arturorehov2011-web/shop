@@ -31,7 +31,7 @@ USERS_FILE = "users.json"
 
 # Для автоматического уменьшения количества: токен GitHub с правом Contents: Read and write
 # (задаётся в Render -> Environment, в код НЕ вставлять)
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "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")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "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").strip().strip("'\"")
 GITHUB_REPO = os.environ.get("GITHUB_REPO", "arturorehov2011-web/shop")
 GITHUB_BRANCH = os.environ.get("GITHUB_BRANCH", "main")
 GITHUB_FILE = "products.json"
@@ -103,6 +103,10 @@ async def github_update_stock(items):
         async with aiohttp.ClientSession(headers=headers) as s:
             for _ in range(3):
                 async with s.get(api, params={"ref": GITHUB_BRANCH}, timeout=aiohttp.ClientTimeout(total=15)) as r:
+                    if r.status == 401:
+                        return False, (f"GitHub ответил 401: токен не принят (неверный, отозван или истёк). "
+                                       f"Бот видит токен длиной {len(GITHUB_TOKEN)} символов, начало: {GITHUB_TOKEN[:11]!r}. "
+                                       f"Должно быть около 93 символов и начало 'github_pat_'")
                     if r.status != 200:
                         return False, f"GitHub ответил {r.status} при чтении файла"
                     meta = await r.json()
