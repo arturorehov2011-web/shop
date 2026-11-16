@@ -25,7 +25,7 @@ AREA_WORKERS = {
 }
 
 BOSSES = ["dahqwll1dirt", "holoun"]
-CAT_NAMES = {"liquid": "Жижки", "vape": "Вейпы", "snus": "Снюсы", "disp": "Одноразки", "energy": "Энергетики"}
+CAT_NAMES = {"liquid": "Жижки", "vape": "Вейпы", "snus": "Снюсы", "disp": "Одноразки", "energy": "Энергетики", "consumable": "Расходники", "condom": "Презики"}
 USERS_FILE = "users.json"
 
 dp = Dispatcher()

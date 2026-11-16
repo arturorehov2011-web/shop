@@ -183,7 +183,7 @@
     <h1 class="logo">dirtyshopp<span>27</span></h1>
     <p class="sub">Выберите товары. Цену, время и место встречи согласуете с админом.</p>
   </header>
-  <div class="tabs" id="tabs"></div>
+  <div class="tabs" id="tabs"></div>  <div class="tabs" id="subtabs"></div>
   <div class="grid" id="grid"></div>
 </div>
 <div class="bar" id="bar">
@@ -215,7 +215,7 @@ if (tg) {
 var LABELS = { in_stock:"В наличии", preorder:"Предзаказ", out:"Нет в наличии" };
 var CATS = [
   { id:"all", name:"Все" }, { id:"liquid", name:"Жижки" }, { id:"vape", name:"Вейпы" },
-  { id:"snus", name:"Снюсы" }, { id:"disp", name:"Одноразки" }, { id:"energy", name:"Энергетики" }
+  { id:"snus", name:"Снюсы" }, { id:"disp", name:"Одноразки" }, { id:"energy", name:"Энергетики" }, { id:"consumable", name:"Расходники" }, { id:"condom", name:"Презики" }
 ];
 var COLORS = { liquid:"#8b5cf6", vape:"#3b82f6", snus:"#f59e0b", disp:"#ec4899", energy:"#10b981" };
 var AREAS = [ { id:"ilinka", name:"Ильинка" }, { id:"nekrasovka", name:"Некрасовка" }, { id:"yuzhny", name:"Южный" }, { id:"krechka", name:"Красная речка" } ];
@@ -266,6 +266,9 @@ function actHTML(p, q) {
   return '<div class="step"><button type="button" data-d="-1" aria-label="Убрать">−</button><span>' + q + ' шт</span><button type="button" data-d="1" aria-label="Добавить">+</button></div>';
 }
 
+var curSub = "all";
+var lastCat = "";
+
 function drawTabs() {
   var t = document.getElementById("tabs");
   t.innerHTML = "";
@@ -275,13 +278,44 @@ function drawTabs() {
     b.setAttribute("aria-pressed", c.id === current ? "true" : "false");
     t.appendChild(b);
   });
+  drawSubTabs();
 }
+
+function drawSubTabs() {
+  var s = document.getElementById("subtabs");
+  if (!s) return;
+  if (lastCat !== current) { curSub = "all"; lastCat = current; }
+  var list = SUBS[current];
+  s.innerHTML = "";
+  if (!list) { s.style.display = "none"; return; }
+  s.style.display = "";
+  var all = [{ id: "all", name: "Все вкусы" }].concat(list);
+  all.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.textContent = c.name; b.dataset.sub = c.id;
+    b.setAttribute("aria-pressed", c.id === curSub ? "true" : "false");
+    s.appendChild(b);
+  });
+}
+
+document.getElementById("subtabs").addEventListener("click", function (e) {
+  var b = e.target.closest("button[data-sub]");
+  if (!b) return;
+  curSub = b.dataset.sub;
+  drawSubTabs();
+  drawGrid();
+});
+
 
 /* сетка перерисовывается только при смене раздела; кнопки в карточке обновляются на месте */
 function drawGrid() {
   var grid = document.getElementById("grid");
   grid.innerHTML = "";
-  var list = products.filter(function (p) { return current === "all" || p.cat === current; });
+  var list = products.filter(function (p) {
+    if (current !== "all" && p.cat !== current) return false;
+    if (SUBS[current] && curSub !== "all" && subsOf(p).indexOf(curSub) === -1) return false;
+    return true;
+  });
   if (!list.length) { grid.innerHTML = '<div class="empty">В этом разделе пока пусто</div>'; return; }
   list.forEach(function (p) {
     var i = products.indexOf(p), off = p.status === "out", q = cart[p.id] || 0;
@@ -388,6 +422,7 @@ document.getElementById("tabs").addEventListener("click", function (e) {
   if (!b) return;
   current = b.dataset.cat;
   Array.prototype.forEach.call(this.children, function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+  drawSubTabs();
   drawGrid();
 });
 
@@ -483,6 +518,41 @@ document.getElementById("grid").addEventListener("click", function (e) {
 })();
 
 
+var SUBS = {
+  liquid: [
+    { id:"sour", name:"Кислые" },
+    { id:"berry", name:"Ягодные" },
+    { id:"fruit", name:"Фруктовые" },
+    { id:"ice", name:"Со льдом" },
+    { id:"energy", name:"Энергетики" },
+    { id:"sweet", name:"Сладкие и жвачка" }
+  ],
+  disp: [
+    { id:"sweet", name:"Мармеладные" }
+  ]
+};
+/* какие вкусы к какому подразделу относятся; можно задать вручную в products.json: "sub": ["sour","ice"] */
+var SUB_RULES = {
+  sour:   /кисл|лимонная кислота/,
+  berry:  /ягод|малин|клубник|ежевик|смородин|черник|голубик|клюкв|земляник|вишн|облепих/,
+  fruit:  /ананас|апельсин|персик|манго|мультифрукт|грейпфрут|груш|слив|нектарин|киви|лимон|лайм|арбуз|маракуй|личи|виноград|колад|яблоч|цитрус|тархун/,
+  ice:    /(^|\s)лед($|\s)|мят/,
+  energy: /энерджи|энергетик|редбулл/,
+  sweet:  /жвачк|бабл|мармелад|тик так|ментос|скитлс|газировк|спрайт|лимонад|кола|компот|шипучк/
+};
+function subsOf(p) {
+  if (Array.isArray(p.sub)) return p.sub;
+  var txt = String(p.name || "").toLowerCase();
+  if (p.cat === "liquid") txt = txt.split(" — ").pop() + " " + String(p.line || "").toLowerCase();
+  var r = [];
+  if (p.cat === "liquid") {
+    Object.keys(SUB_RULES).forEach(function (k) { if (SUB_RULES[k].test(txt)) r.push(k); });
+    if (/замерзон/.test(txt)) r.push("ice");
+  } else if (p.cat === "disp") {
+    if (/мармелад/.test(txt)) r.push("sweet");
+  }
+  return r;
+}
 drawTabs();
 var FALLBACK = [{"id": "p1", "cat": "liquid", "name": "Жижка 1", "price": 12, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "preorder"}, "eta": "ждём поставку, около 3 дней"}, {"id": "p2", "cat": "liquid", "name": "Жижка 2", "price": 12, "image": "", "status": "in_stock", "eta": "ждём поставку, около 3 дней", "areas": {"ilinka": "in_stock", "nekrasovka": "preorder", "yuzhny": "preorder", "krechka": "out"}}, {"id": "p3", "cat": "vape", "name": "Вейп 1", "price": 25, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p4", "cat": "vape", "name": "Вейп 2", "price": 30, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}, {"id": "p5", "cat": "snus", "name": "Снюс 1", "price": 9, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}}, {"id": "p6", "cat": "snus", "name": "Снюс 2", "price": 10, "image": "", "status": "preorder", "eta": "ждём поставку, около недели", "areas": {"ilinka": "out", "nekrasovka": "preorder", "yuzhny": "out", "krechka": "preorder"}}, {"id": "p7", "cat": "disp", "name": "Одноразка 1", "price": 14, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p8", "cat": "disp", "name": "Одноразка 2", "price": 15, "image": "", "status": "in_stock", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "in_stock", "krechka": "out"}}, {"id": "p9", "cat": "energy", "name": "Энергетик 1", "price": 3, "image": "", "status": "in_stock", "areas": {"ilinka": "in_stock", "nekrasovka": "in_stock", "yuzhny": "in_stock", "krechka": "in_stock"}}, {"id": "p10", "cat": "energy", "name": "Энергетик 2", "price": 3, "image": "", "status": "out", "areas": {"ilinka": "out", "nekrasovka": "out", "yuzhny": "out", "krechka": "out"}}];
 fetch("products.json?t=" + Date.now())
