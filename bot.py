@@ -567,6 +567,22 @@ async def on_order(m: Message, bot: Bot):
     await process_order(m, bot, data.get("area", "ilinka"), data.get("items", []))
 
 
+SELF_URL = os.environ.get("RENDER_EXTERNAL_URL") or "https://dirty-bot-d9t4.onrender.com"
+
+
+async def keep_alive():
+    """Раз в 9 минут стучится на собственный адрес, чтобы бесплатный Render не усыплял бота (засыпает после 15 минут без обращений)."""
+    await asyncio.sleep(60)
+    while True:
+        try:
+            async with aiohttp.ClientSession() as s:
+                async with s.get(SELF_URL, timeout=aiohttp.ClientTimeout(total=30)) as r:
+                    await r.read()
+        except Exception as e:
+            print("keep_alive:", e)
+        await asyncio.sleep(540)
+
+
 async def handle_ping(request):
     return web.Response(text="Bot is running!")
 
@@ -583,6 +599,7 @@ async def main():
     bot = Bot(TOKEN)
     me = await bot.get_me()
     print(f"=== БОТ @{me.username} УСПЕШНО ЗАПУЩЕН НА RENDER 24/7! ===")
+    keep_task = asyncio.create_task(keep_alive())  # ссылка нужна, чтобы задачу не удалил сборщик мусора
     await dp.start_polling(bot)
 
 
