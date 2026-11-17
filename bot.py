@@ -39,6 +39,29 @@ PAGE_SIZE = 8
 
 dp = Dispatcher()
 stock_lock = asyncio.Lock()
+order_lock = asyncio.Lock()
+ORDERS_FILE = "orders.json"
+
+
+def load_orders():
+    if os.path.exists(ORDERS_FILE):
+        try:
+            return json.load(open(ORDERS_FILE, encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+ORDERS = load_orders()
+
+
+def save_orders():
+    while len(ORDERS) > 200:
+        ORDERS.pop(next(iter(ORDERS)), None)
+    try:
+        json.dump(ORDERS, open(ORDERS_FILE, "w", encoding="utf-8"), ensure_ascii=False)
+    except Exception as e:
+        print("Не удалось сохранить заказы", e)
 
 
 def apply_stock(text, deltas, warn=True, absolute=False):
@@ -239,7 +262,7 @@ async def process_order(m: Message, bot: Bot, area: str, raw_items: list):
     stock_warn = ""
     if not stock_ok:
         stock_warn = ("\n\n<i>⚠️ Количество НЕ списалось автоматически: " + html.escape(str(stock_res))
-                      + ". Поправь вручную командой /stock.</i>")
+                      + ". Поправь вручную кнопкой «Наличие товаров».</i>")
     elif stock_res["notes"]:
         stock_warn = "\n\n<i>⚠️ " + html.escape("; ".join(stock_res["notes"])) + "</i>"
 
@@ -269,12 +292,26 @@ async def process_order(m: Message, bot: Bot, area: str, raw_items: list):
         admin_text += f"\n\n<i>⚠️ Ещё не нажали /start в боте: {', '.join(missing)}</i>"
 
     boss_ids = set(ADMINS) | {users[x] for x in BOSSES if x in users}
+    oid = os.urandom(3).hex()
+    reject_data = f"no:{oid}"
+    if stock_ok:
+        pairs = "_".join(f"{pid}-{q}" for pid, q in order_items)
+        if len(f"no:{oid}:{pairs}".encode()) <= 64:
+            reject_data = f"no:{oid}:{pairs}"
+    kb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="✅ Принять", callback_data=f"ok:{oid}"),
+        InlineKeyboardButton(text="❌ Отклонить", callback_data=reject_data),
+    ]])
+    sent = []
     for chat_id in recipients:
         text = admin_text + (stock_warn if chat_id in boss_ids else "")
         try:
-            await bot.send_message(chat_id, text, parse_mode="HTML")
+            msg = await bot.send_message(chat_id, text, parse_mode="HTML", reply_markup=kb)
+            sent.append([chat_id, msg.message_id, text])
         except Exception as e:
             print("Не удалось отправить", chat_id, e)
+    ORDERS[oid] = {"status": "pending", "buyer": u.id, "items": order_items, "deducted": bool(stock_ok), "messages": sent}
+    save_orders()
 
     reply = (
         f"✅ <b>Заказ принят!</b>\n"
@@ -448,6 +485,80 @@ async def on_stock_cb(c: CallbackQuery):
         return
 
     await c.answer()
+
+
+def is_staff(u):
+    staff = {w.lstrip("@").lower() for w in AREA_WORKERS.values()} | set(BOSSES)
+    return (u.username or "").lower() in staff or u.id in ADMINS
+
+
+@dp.callback_query(F.data.startswith(("ok:", "no:")))
+async def on_order_decision(c: CallbackQuery, bot: Bot):
+    if not is_staff(c.from_user):
+        await c.answer("Нет доступа", show_alert=True)
+        return
+    parts = c.data.split(":", 2)
+    action, oid = parts[0], parts[1]
+    pairs = parts[2] if len(parts) > 2 else ""
+    who = f"@{c.from_user.username}" if c.from_user.username else c.from_user.full_name
+
+    async with order_lock:
+        o = ORDERS.get(oid)
+        if o and o["status"] != "pending":
+            await c.answer("Этот заказ уже обработан: " + o.get("label", ""), show_alert=True)
+            try:
+                await c.message.edit_reply_markup(reply_markup=None)
+            except Exception:
+                pass
+            return
+
+        if action == "ok":
+            label = "✅ Принят"
+        else:
+            if o:
+                items, deducted = [tuple(x) for x in o["items"]], o.get("deducted", False)
+            else:  # запись о заказе потеряна (бот перезапускался), берём из кнопки
+                items = []
+                for s in filter(None, pairs.split("_")):
+                    pid, q = s.rsplit("-", 1)
+                    items.append((pid, int(q)))
+                deducted = bool(items)
+            if items and deducted:
+                back = {}
+                for pid, q in items:
+                    back[pid] = back.get(pid, 0) + q
+                ok, res = await github_change_stock(back, f"заказ {oid} отклонён, {who}", warn=False)
+                if not ok:
+                    await c.answer("Не удалось вернуть количество: " + str(res)[:150], show_alert=True)
+                    return
+                label = "❌ Отклонён, количество возвращено"
+            else:
+                label = "❌ Отклонён"
+
+        if not o:
+            o = ORDERS[oid] = {"messages": [], "buyer": None}
+        o["status"], o["label"] = action, label
+        save_orders()
+
+    suffix = f"\n\n<b>{label}</b> ({html.escape(who)})"
+    done = set()
+    for chat_id, msg_id, text in o["messages"]:
+        done.add((chat_id, msg_id))
+        try:
+            await bot.edit_message_text(text + suffix, chat_id=chat_id, message_id=msg_id, parse_mode="HTML", reply_markup=None)
+        except Exception as e:
+            print("Не удалось обновить сообщение", chat_id, e)
+    if (c.message.chat.id, c.message.message_id) not in done:
+        try:
+            await c.message.edit_text(c.message.html_text + suffix, parse_mode="HTML", reply_markup=None)
+        except Exception as e:
+            print("edit:", e)
+    if o.get("buyer"):
+        try:
+            await bot.send_message(o["buyer"], "✅ Продавец принял ваш заказ." if action == "ok" else "❌ Ваш заказ отклонён.")
+        except Exception:
+            pass
+    await c.answer("Готово")
 
 
 @dp.message(F.web_app_data)
