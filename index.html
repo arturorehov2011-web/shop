@@ -42,6 +42,13 @@
          border-radius:12px; font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;
          transition:background .2s, border-color .2s, color .2s; }
   .tab[aria-pressed="true"] { background:rgba(139,92,246,.2); border-color:rgba(139,92,246,.65); color:#fff; }
+  #subtabs { margin:-6px 0 6px; }
+  .subgroup { margin:0 0 12px; }
+  .sublabel { font-size:12px; color:var(--muted); margin:0 0 6px 2px; }
+  .chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin; scrollbar-color:rgba(139,92,246,.55) transparent; user-select:none; cursor:grab; }
+  .chips::-webkit-scrollbar { height:4px; }
+  .chips::-webkit-scrollbar-thumb { background:rgba(139,92,246,.55); border-radius:4px; }
+  .chips .tab { flex:0 0 auto; height:36px; padding:0 14px; white-space:nowrap; }
 
   .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .empty { grid-column:1/-1; text-align:center; color:var(--muted); padding:48px 0; font-size:14px; }
@@ -183,7 +190,8 @@
     <h1 class="logo">dirtyshopp<span>27</span></h1>
     <p class="sub">Выберите товары. Цену, время и место встречи согласуете с админом.</p>
   </header>
-  <div class="tabs" id="tabs"></div>  <div class="tabs" id="subtabs"></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="subtabs"></div>
   <div class="grid" id="grid"></div>
 </div>
 <div class="bar" id="bar">
@@ -269,7 +277,7 @@ function actHTML(p, q) {
   return '<div class="step"><button type="button" data-d="-1" aria-label="Убрать">−</button><span>' + q + ' шт</span><button type="button" data-d="1" aria-label="Добавить"' + (q >= maxOf(p) ? ' disabled' : '') + '>+</button></div>';
 }
 
-var curSub = "all";
+var filt = {};
 var lastCat = "";
 
 function drawTabs() {
@@ -284,30 +292,98 @@ function drawTabs() {
   drawSubTabs();
 }
 
-function drawSubTabs() {
-  var s = document.getElementById("subtabs");
-  if (!s) return;
-  if (lastCat !== current) { curSub = "all"; lastCat = current; }
-  var list = SUBS[current];
-  s.innerHTML = "";
-  if (!list) { s.style.display = "none"; return; }
-  s.style.display = "";
-  var all = [{ id: "all", name: "Все вкусы" }].concat(list);
-  all.forEach(function (c) {
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "tab"; b.textContent = c.name; b.dataset.sub = c.id;
-    b.setAttribute("aria-pressed", c.id === curSub ? "true" : "false");
-    s.appendChild(b);
+var FILTERS = {
+  liquid: [{ key: "sub", label: "Вкус", all: "Все вкусы" }, { key: "brand", label: "Фирма", all: "Все фирмы" }],
+  disp:   [{ key: "sub", label: "Вкус", all: "Все вкусы" }],
+  vape:   [{ key: "color", label: "Цвет", all: "Все цвета" }]
+};
+
+function filterOptions(cat, key) {
+  if (key === "sub") return SUBS[cat] || [];
+  var seen = {}, out = [];
+  products.forEach(function (p) {
+    if (p.cat !== cat) return;
+    (key === "brand" ? [brandOf(p)] : colorsOf(p)).forEach(function (v) {
+      if (v && !seen[v]) { seen[v] = 1; out.push({ id: v, name: v }); }
+    });
+  });
+  var order = key === "brand" ? BRAND_RULES : COLOR_RULES;
+  function rank(n) { for (var i = 0; i < order.length; i++) if (order[i][0] === n) return i; return 99; }
+  out.sort(function (x, y) { return rank(x.id) - rank(y.id); });
+  return out;
+}
+
+function enableDragScroll(row) {
+  row.addEventListener("wheel", function (e) {
+    if (row.scrollWidth > row.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      row.scrollLeft += e.deltaY; e.preventDefault();
+    }
+  }, { passive: false });
+  row.addEventListener("mousedown", function (e) {
+    if (e.button !== 0) return;
+    var x0 = e.clientX, s0 = row.scrollLeft, moved = false;
+    function move(ev) { var dx = ev.clientX - x0; if (Math.abs(dx) > 5) moved = true; row.scrollLeft = s0 - dx; }
+    function up() {
+      document.removeEventListener("mousemove", move); document.removeEventListener("mouseup", up);
+      if (moved) {
+        var stop = function (ev) { ev.stopPropagation(); ev.preventDefault(); };
+        row.addEventListener("click", stop, true);
+        setTimeout(function () { row.removeEventListener("click", stop, true); }, 0);
+      }
+    }
+    document.addEventListener("mousemove", move); document.addEventListener("mouseup", up);
   });
 }
 
+function drawSubTabs() {
+  var s = document.getElementById("subtabs");
+  if (!s) return;
+  if (lastCat !== current) { filt = {}; lastCat = current; }
+  var scroll = {};
+  Array.prototype.forEach.call(s.querySelectorAll(".chips"), function (r) { scroll[r.dataset.key] = r.scrollLeft; });
+  s.innerHTML = "";
+  var shown = 0;
+  (FILTERS[current] || []).forEach(function (g) {
+    var opts = filterOptions(current, g.key);
+    if (!opts.length) return;
+    shown++;
+    var wrap = document.createElement("div"); wrap.className = "subgroup";
+    var lab = document.createElement("div"); lab.className = "sublabel"; lab.textContent = g.label;
+    var row = document.createElement("div"); row.className = "chips"; row.dataset.key = g.key;
+    [{ id: "all", name: g.all }].concat(opts).forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "tab"; b.textContent = c.name;
+      b.dataset.fkey = g.key; b.dataset.fval = c.id;
+      b.setAttribute("aria-pressed", (filt[g.key] || "all") === c.id ? "true" : "false");
+      row.appendChild(b);
+    });
+    wrap.appendChild(lab); wrap.appendChild(row); s.appendChild(wrap);
+    enableDragScroll(row);
+    if (scroll[g.key]) row.scrollLeft = scroll[g.key];
+  });
+  s.style.display = shown ? "" : "none";
+}
+
 document.getElementById("subtabs").addEventListener("click", function (e) {
-  var b = e.target.closest("button[data-sub]");
+  var b = e.target.closest("button[data-fkey]");
   if (!b) return;
-  curSub = b.dataset.sub;
+  filt[b.dataset.fkey] = b.dataset.fval;
   drawSubTabs();
   drawGrid();
 });
+
+function passFilters(p) {
+  var g = FILTERS[current];
+  if (!g) return true;
+  for (var i = 0; i < g.length; i++) {
+    var v = filt[g[i].key];
+    if (!v || v === "all") continue;
+    if (g[i].key === "sub" && subsOf(p).indexOf(v) === -1) return false;
+    if (g[i].key === "brand" && brandOf(p) !== v) return false;
+    if (g[i].key === "color" && colorsOf(p).indexOf(v) === -1) return false;
+  }
+  return true;
+}
 
 
 /* сетка перерисовывается только при смене раздела; кнопки в карточке обновляются на месте */
@@ -316,7 +392,7 @@ function drawGrid() {
   grid.innerHTML = "";
   var list = products.filter(function (p) {
     if (current !== "all" && p.cat !== current) return false;
-    if (SUBS[current] && curSub !== "all" && subsOf(p).indexOf(curSub) === -1) return false;
+    if (!passFilters(p)) return false;
     return true;
   });
   if (!list.length) { grid.innerHTML = '<div class="empty">В этом разделе пока пусто</div>'; return; }
@@ -532,7 +608,9 @@ var SUBS = {
     { id:"sweet", name:"Сладкие и жвачка" }
   ],
   disp: [
-    { id:"sweet", name:"Мармеладные" }
+    { id:"sweet", name:"Мармеладные" },
+    { id:"cola",  name:"Колы и газировки" },
+    { id:"other", name:"Другие" }
   ]
 };
 /* какие вкусы к какому подразделу относятся; можно задать вручную в products.json: "sub": ["sour","ice"] */
@@ -540,9 +618,9 @@ var SUB_RULES = {
   sour:   /кисл|лимонная кислота/,
   berry:  /ягод|малин|клубник|ежевик|смородин|черник|голубик|клюкв|земляник|вишн|облепих/,
   fruit:  /ананас|апельсин|персик|манго|мультифрукт|грейпфрут|груш|слив|нектарин|киви|лимон|лайм|арбуз|маракуй|личи|виноград|колад|яблоч|цитрус|тархун/,
-  ice:    /(^|\s)лед($|\s)|мят/,
+  ice:    /(^|\s)лед($|\s)|мят|мороз|ледян/,
   energy: /энерджи|энергетик|редбулл/,
-  sweet:  /жвачк|бабл|мармелад|тик так|ментос|скитлс|газировк|спрайт|лимонад|кола|компот|шипучк/
+  sweet:  /жвачк|бабл|мармелад|тик так|ментос|скитлс|газировк|спрайт|лимонад|кола|компот|шипучк|чупа|фанта|варенье/
 };
 function subsOf(p) {
   if (Array.isArray(p.sub)) return p.sub;
@@ -553,8 +631,37 @@ function subsOf(p) {
     Object.keys(SUB_RULES).forEach(function (k) { if (SUB_RULES[k].test(txt)) r.push(k); });
     if (/замерзон/.test(txt)) r.push("ice");
   } else if (p.cat === "disp") {
-    if (/мармелад/.test(txt)) r.push("sweet");
+    if (/мармелад|червяч/.test(txt)) r.push("sweet");
+    if (/кол[аы]|газиров|спрайт|фанта/.test(txt)) r.push("cola");
+    if (!r.length) r.push("other");
   }
+  return r;
+}
+/* фирма жидкости; можно задать вручную в products.json: "brand": "Название" */
+var BRAND_RULES = [
+  ["Проклятая невеста", /проклятая невеста/i], ["Злая монашка", /злая монашка/i], ["Самоубийца", /самоубийца/i],
+  ["Rick and Morty", /rick and morty|рик и морти/i], ["Подонки", /подонки/i], ["Дота", /дота/i],
+  ["Дуал Хард", /дуал хард|dual hard/i], ["Monstervapor", /monstervapor/i], ["Skala", /skala/i]
+];
+function brandOf(p) {
+  if (p.brand) return p.brand;
+  var t = String(p.line || p.name || "");
+  for (var i = 0; i < BRAND_RULES.length; i++) if (BRAND_RULES[i][1].test(t)) return BRAND_RULES[i][0];
+  return t.replace(/\s*\d+\s*мг.*$/i, "").trim() || "Другие";
+}
+/* цвет вейпа берётся из скобок в названии; можно задать вручную в products.json: "colors": ["Белый"] */
+var COLOR_RULES = [
+  ["Белый", /бел/], ["Чёрный", /черн|чёрн/], ["Серый", /сер(ый|ая|ое|ые|ебр)|графит/], ["Красный", /красн/],
+  ["Оранжевый", /оранж/], ["Жёлтый", /желт|жёлт/], ["Зелёный", /зелен|зелён/], ["Синий", /син|голуб/],
+  ["Фиолетовый", /фиолет|сирен/], ["Розовый", /розов/], ["Коричневый", /шоколад|коричн/]
+];
+function colorsOf(p) {
+  if (Array.isArray(p.colors)) return p.colors;
+  if (p.cat !== "vape") return [];
+  var m = String(p.name || "").toLowerCase().match(/\(([^)]*)\)/g);
+  if (!m) return [];
+  var txt = m[m.length - 1], r = [];
+  COLOR_RULES.forEach(function (c) { if (c[1].test(txt)) r.push(c[0]); });
   return r;
 }
 drawTabs();
@@ -566,8 +673,8 @@ function loadProducts(url) {
     .then(function (r) { if (!r.ok) throw new Error("no products.json"); return r.json(); });
 }
 loadProducts(RAW_PRODUCTS).catch(function () { return loadProducts("products.json"); })
-  .then(function (d) { products = d.map(normProduct); drawGrid(); updateBar(); })
-  .catch(function () { products = FALLBACK.map(normProduct); drawGrid(); updateBar(); });
+  .then(function (d) { products = d.map(normProduct); drawSubTabs(); drawGrid(); updateBar(); })
+  .catch(function () { products = FALLBACK.map(normProduct); drawSubTabs(); drawGrid(); updateBar(); });
 </script>
 <script id="tg-order-fix">
 (function() {
