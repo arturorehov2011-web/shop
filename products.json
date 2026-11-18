@@ -53,7 +53,7 @@
 {"id":"l22","cat":"liquid","line":"Злая монашка BUBBLE 80мг","name":"Злая монашка BUBBLE 80мг — кислая мармеладная лента","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
 {"id":"l23","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — редбулл малина","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"l24","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — ежевика малина мята","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
-{"id":"l25","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — энергетик смородина","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
+{"id":"l25","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — энергетик смородина","price":500,"stock":2,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
 {"id":"l26","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — малина персик","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
 {"id":"l27","cat":"liquid","line":"Злая монашка SWEET 80мг","name":"Злая монашка SWEET 80мг — малиновый бабл гам","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
 {"id":"l28","cat":"liquid","line":"Злая монашка & Duall 70мг","name":"Злая монашка & Duall 70мг — кислая смородина виноград","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka"]},
