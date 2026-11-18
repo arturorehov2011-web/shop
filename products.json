@@ -1,6 +1,6 @@
 [
 {"id":"v1","cat":"vape","name":"Brusko Nevoks (черный)","price":999,"stock":1,"image":"https://i.postimg.cc/SRBybs60/Max-a-Sozdaj-kartocku-tova.png","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
-{"id":"v2","cat":"vape","name":"Xros 6 Mini (зеленый, розово-фиолетовый, серый)","price":2700,"stock":1,"image":"https://i.postimg.cc/sxzZBp1x/6b04c703-2b49-4ba7-b44a-04ae3bb48cac.png","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
+{"id":"v2","cat":"vape","name":"Xros 6 Mini (зеленый, розово-фиолетовый, серый)","price":2700,"stock":2,"image":"https://i.postimg.cc/sxzZBp1x/6b04c703-2b49-4ba7-b44a-04ae3bb48cac.png","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"v3","cat":"vape","name":"Xros 6 (серый, черный)","price":2900,"stock":1,"image":"https://i.postimg.cc/m274FT3r/5460927046172221267.jpg","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"v4","cat":"vape","name":"Pasito II (шоколадный)","price":3200,"stock":1,"image":"https://i.postimg.cc/vBZkqs6T/5460927046172221272.jpg","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"v5","cat":"vape","name":"Aegis Boost III (красный)","price":3350,"stock":1,"image":"https://i.postimg.cc/1XNW25R1/5460927046172221271.jpg","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
