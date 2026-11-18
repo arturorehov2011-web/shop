@@ -65,7 +65,7 @@
 {"id":"l34","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — компот из клюквы и смородины","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"l35","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — смородина голубика","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"l36","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — черная смородина","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
-{"id":"l37","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — лесные ягоды","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
+{"id":"l37","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — лесные ягоды","price":480,"stock":0,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"l38","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — ягодный бабл гам","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"l39","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — персик манго","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
 {"id":"l40","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — скитлс лимон лайм","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka","nekrasovka","yuzhny"]},
