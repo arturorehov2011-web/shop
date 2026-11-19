@@ -6,7 +6,7 @@ from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.types import (Message, ReplyKeyboardRemove, CallbackQuery, ReplyKeyboardMarkup,
                            KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton)
 
-TOKEN = os.environ.get("BOT_TOKEN", "")  # токен бота задаётся на Render (Environment), в коде его нет
+TOKEN = os.environ.get("BOT_TOKEN", "9029715531:AAENQ8z6dV5A-J6AHi1dUsfu_1H22KM1DrQ")  # токен бота задаётся на Render (Environment), в коде его нет
 WEBAPP_URL = os.environ.get("WEBAPP_URL", "https://arturorehov2011-web.github.io/shop").rstrip("/")
 RAW_JSON_URL = "https://raw.githubusercontent.com/arturorehov2011-web/shop/main/products.json"
 ADMINS = [6981934499]
