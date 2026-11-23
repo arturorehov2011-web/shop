@@ -96,7 +96,7 @@
 {"id":"lk9","cat":"liquid","line":"Злая монашка SWEET 70мг","name":"Злая монашка SWEET 70мг — газировка с вишней","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk10","cat":"liquid","line":"Злая монашка SWEET 70мг","name":"Злая монашка SWEET 70мг — клубника малина мята","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk11","cat":"liquid","line":"Злая монашка 70мг","name":"Злая монашка 70мг — клубничный лимонад","price":500,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
-{"id":"lk12","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислая малиновая шипучка","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
+{"id":"lk12","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислая малиновая шипучка","price":480,"stock":0,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk13","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислый яблочный энергетик","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk14","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислое манго киви лимон","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk15","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислый ягодный взрыв","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
