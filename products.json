@@ -62,7 +62,7 @@
 {"id":"l32","cat":"liquid","line":"Злая монашка SOUR 70мг","name":"Злая монашка SOUR 70мг — лимонная кислота с клюквой","price":500,"stock":1,"image":"https://i.postimg.cc/05VTXpTY/758cda8b-1d92-47e7-b0b8-02ff7459a35d.png","status":"in_stock","eta":"","areas":["ilinka" ]},
 {"id":"l33","cat":"liquid","line":"Злая монашка SOUR 70мг","name":"Злая монашка SOUR 70мг — кислый нектарин со сливой","price":500,"stock":1,"image":"https://i.postimg.cc/FKhGQ6cp/d2d371ec-2353-430d-8988-a246dc73006d.png","status":"in_stock","eta":"","areas":["ilinka" ]},
 {"id":"l34","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — компот из клюквы и смородины","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka" ]},
-{"id":"l35","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — смородина голубика","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka" ]},
+{"id":"l35","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — смородина голубика","price":480,"stock":0,"image":"","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"l36","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — черная смородина","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka" ]},
 {"id":"l37","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — лесные ягоды","price":480,"stock":0,"image":"","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"l38","cat":"liquid","line":"Rick and Morty 70мг","name":"Rick and Morty 70мг — ягодный бабл гам","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["ilinka" ]},
