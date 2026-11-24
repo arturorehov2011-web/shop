@@ -17,7 +17,7 @@
 {"id":"v11","cat":"vape","name":"Brusko Micool (оранжевый)","price":650,"stock":1,"image":"https://i.postimg.cc/pLVSXvqz/5460927046172221266.jpg","status":"in_stock","eta":"","areas":["krechka"]},
 
 {"id":"c1","cat":"consumable","name":"АКБ Samsung (Огурчик)","price":420,"stock":1,"image":"https://i.postimg.cc/fLmkcYM7/ef902103-b8f5-45d9-8256-33ab45b11680.png","status":"in_stock","eta":"","areas":["ilinka" ]},
-{"id":"c2","cat":"consumable","name":"Картриджи XROS 0.4 Ом и 0.6 Ом (в наличии 0.4 Ом)","price":380,"stock":7,"image":"https://i.postimg.cc/5tjTXRRX/0ab30b5e-b0d4-4cde-a300-5a8cc03992cc.png","status":"in_stock","eta":"","areas":["ilinka"]},
+{"id":"c2","cat":"consumable","name":"Картриджи XROS 0.4 Ом и 0.6 Ом (в наличии 0.4 Ом)","price":380,"stock":8,"image":"https://i.postimg.cc/5tjTXRRX/0ab30b5e-b0d4-4cde-a300-5a8cc03992cc.png","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"c3","cat":"consumable","name":"Испарители серии BOOST (50-58 Вт)","price":400,"stock":1,"image":"https://i.postimg.cc/jqXzwSYr/ec182637-f54f-4cb9-ac04-9cc3bcb42f2d.png","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"c4","cat":"consumable","name":"Испарители KNIGHT / PASITO (50-65 Вт)","price":400,"stock":1,"image":"https://i.postimg.cc/HkByxDz6/cdf9b095-146f-42d1-a830-48815bf274a6.png","status":"in_stock","eta":"","areas":["ilinka"]},
 
