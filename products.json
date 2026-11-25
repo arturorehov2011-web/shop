@@ -21,7 +21,7 @@
 {"id":"c3","cat":"consumable","name":"Испарители серии BOOST (50-58 Вт)","price":400,"stock":1,"image":"https://i.postimg.cc/jqXzwSYr/ec182637-f54f-4cb9-ac04-9cc3bcb42f2d.png","status":"in_stock","eta":"","areas":["ilinka"]},
 {"id":"c4","cat":"consumable","name":"Испарители KNIGHT / PASITO (50-65 Вт)","price":400,"stock":1,"image":"https://i.postimg.cc/HkByxDz6/cdf9b095-146f-42d1-a830-48815bf274a6.png","status":"in_stock","eta":"","areas":["ilinka"]},
 
-{"id":"k1","cat":"condom","name":"Презервативы Злая монашка (1 шт)","price":60,"stock":2,"image":"https://i.postimg.cc/d0fCF4Xf/0876ee71-e7fb-47b9-8ea4-3704e02b4cf7.png","status":"in_stock","eta":"","areas":["ilinka"]},
+{"id":"k1","cat":"condom","name":"Презервативы Злая монашка (1 шт)","price":60,"stock":3,"image":"https://i.postimg.cc/d0fCF4Xf/0876ee71-e7fb-47b9-8ea4-3704e02b4cf7.png","status":"in_stock","eta":"","areas":["ilinka"]},
 
 {"id":"d1","cat":"disp","name":"Rick and Morty Bottle, черничные мармеладные червячки (24 000 тяг)","price":1550,"stock":0,"image":"https://i.postimg.cc/sgQrB594/2949bb12-0cfb-4818-bf3f-4783167cab8f.png","status":"out","eta":"","areas":["ilinka"]},
 {"id":"d2","cat":"disp","name":"Waka 20к (малиновая кола)","price":1550,"stock":1,"image":"https://i.postimg.cc/5yG1hvRz/5f12a9b1-1bac-4908-8657-3bea508c2f39.png","status":"in_stock","eta":"","areas":["nekrasovka"]},
