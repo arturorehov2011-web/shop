@@ -686,7 +686,7 @@ loadProducts(RAW_PRODUCTS).catch(function () { return loadProducts("products.jso
           var area = d.area || "ilinka";
           var items = (d.items || []).map(function(i) { return i.id + "-" + i.qty; }).join("_");
           var code = "ord_" + area + "_" + items;
-          window.Telegram.WebApp.openTelegramLink("https://t.me/dirtyshopp2_bot?start=" + code);
+          window.Telegram.WebApp.openTelegramLink("https://t.me/dirtiuo_bot?start=" + code);
           setTimeout(function() {
             try { window.Telegram.WebApp.close(); } catch (e) {}
           }, 200);

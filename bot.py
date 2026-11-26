@@ -6,7 +6,7 @@ from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.types import (Message, ReplyKeyboardRemove, CallbackQuery, ReplyKeyboardMarkup,
                            KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton)
 
-TOKEN = os.environ.get("BOT_TOKEN", "9029715531:AAGdKAO5Va5kz7HHIZzTnpDl_AA89EDEhpE")  # токен бота задаётся на Render (Environment), в коде его нет
+TOKEN = os.environ.get("BOT_TOKEN", "9174635853:AAF7MPsx7PiCQRmWp8dH5RyEiduo6kIqTI4")  # токен бота задаётся на Render (Environment), в коде его нет
 WEBAPP_URL = os.environ.get("WEBAPP_URL", "https://arturorehov2011-web.github.io/shop").rstrip("/")
 RAW_JSON_URL = "https://raw.githubusercontent.com/arturorehov2011-web/shop/main/products.json"
 ADMINS = [6981934499]
@@ -354,7 +354,7 @@ async def start(m: Message, command: CommandObject, bot: Bot):
         staff_note += "\n\n📦 Количество товаров меняется кнопкой «📦 Наличие товаров» внизу."
 
     await m.answer(
-        "Привет! Нажми синюю кнопку «Магазин» слева внизу, выбери товары и оформи заказ." + staff_note,
+        "Привет! Этот бот сделан исключительно в развлекательной цели,ни к чему не призывает. Нажми синюю кнопку «Магазин» слева внизу, выбери товары и оформи заказ." + staff_note,
         reply_markup=boss_kb() if is_boss(m.from_user) else ReplyKeyboardRemove(),
     )
 
