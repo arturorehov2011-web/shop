@@ -101,5 +101,5 @@
 {"id":"lk14","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислое манго киви лимон","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk15","cat":"liquid","line":"Rick and Morty на замерзоне 70мг","name":"Rick and Morty на замерзоне 70мг — кислый ягодный взрыв","price":480,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"lk16","cat":"liquid","line":"Самоубийца v2 DANGER 100мг","name":"Самоубийца v2 DANGER 100мг — земляничный спрайт","price":520,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
-{"id":"lk17","cat":"liquid","line":"Самоубийца v2 DANGER 100мг","name":"Самоубийца v2 DANGER 100мг — зеленый скитлс","price":520,"stock":1,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
+{"id":"lk17","cat":"liquid","line":"Самоубийца v2 DANGER 100мг","name":"Самоубийца v2 DANGER 100мг — зеленый скитлс","price":520,"stock":0,"image":"","status":"in_stock","eta":"","areas":["krechka"]},
 {"id":"v17","cat":"vape","name":"XROS 5 mini Milky Way Edition (серый)","price":2750,"stock":1,"image":"https://i.postimg.cc/qvPhRQqg/0e248298-80d0-46e4-b17a-c365722470ed.png","status":"in_stock","eta":"","areas":["ilinka"]}]
